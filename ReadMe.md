@@ -9,4 +9,4 @@ Dependencies are listed in `requirements.txt` and can be installed by running th
 ```python
 python -m pip install -r requirements.txt
 ```
-*Note: the above command may request you use a Python venv (virtual environment) or override using `--break-system-packages` depending on whether your OS is compliant with PEP 668. I **highly** recommend using a venv instead of the break-system-packages override. See [this tutorial](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) from the Python Packaging Authority for help with this.
+*Note: the above command may request you use a Python venv (virtual environment) or override using `--break-system-packages` depending on whether your OS is compliant with PEP 668. I **highly** recommend using a venv instead of the break-system-packages override. See [this tutorial](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) from the Python Packaging Authority for help with this.*
