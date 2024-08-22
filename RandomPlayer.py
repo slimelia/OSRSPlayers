@@ -73,14 +73,14 @@ class PlayerRandomiser:
 
     def __init__(self):
         self.alreadyPostedUsers = self.__getAlreadyPosted()
-    
+
     def __getAlreadyPosted(self):
         try:
             with open('usernames.pickle','rb') as f:
                 return pickle.load(f)
         except FileNotFoundError:
             return set()
-    
+
     def __pickNewUser(self):
         row = random.randint(0,PlayerRandomiser.__ROWMAX-1)
         page = PlayerRandomiser.__URL+str(random.randint(1,PlayerRandomiser.__TOP))
@@ -88,7 +88,7 @@ class PlayerRandomiser:
         browser.open(page)
         fetchedUsername = str(browser.page.find_all(class_=PlayerRandomiser.__HISCORES_CLASS)[row].find(PlayerRandomiser.__HTML_TAG_CONTAINING_USERNAME).contents[0])
         return fetchedUsername.replace(u'\xa0', '_').replace(' ','_')
-    
+
     def getRandomUser(self):
         while (username := self.__pickNewUser()) in self.alreadyPostedUsers:
             pass
@@ -97,13 +97,13 @@ class PlayerRandomiser:
             pickle.dump(self.alreadyPostedUsers, f)
         print(self.alreadyPostedUsers)
         return Hiscores(username)
-        
-def post(page):
+
+def post(page,creds):
     randomiser = PlayerRandomiser()
     hiscoreRecord = randomiser.getRandomUser()
     username = hiscoreRecord.username.replace('_',' ')
-    
-    
+
+
     blocks = [
         MarkdownBlock(POST_TEMPLATE.format(
             username=username,
@@ -134,21 +134,29 @@ def post(page):
             total=hiscoreRecord.skill('total')
             ))
     ]
-    page.post(f'Random OSRS User of the Day: {username}', blocks,tags=['cohost.py', 'bot','botchosting','The Cohost Bot feed','automated post','osrs','old school runescape','RuneScape'])
+    try:
+        page.post(f'Random OSRS User of the Day: {username}', blocks,tags=['cohost.py', 'bot','botchosting','The Cohost Bot feed','automated post','osrs','old school runescape','RuneScape'])
+    except:
+        cohost = User.login(creds['username'],creds['passwd'])
+        page = cohost.getProject(creds['pageName'])
+        page.post(f'Random OSRS User of the Day: {username}', blocks,tags=['cohost.py', 'bot','botchosting','The Cohost Bot feed','automated post','osrs','old school runescape','RuneScape'])
+
     return 0
 
 
 if __name__ == '__main__':
-    cohost = User.login(input("Cohost login username: "),getpass.getpass("Cohost password: "))
+    username = input("Cohost login username: ")
+    passwd = getpass.getpass("Cohost password: ")
+    cohost = User.login(username,passwd)
     # cohost = User.loginWithCookie(input('Cookie: '))
-    page = cohost.getProject(input("Cohost page name: "))
-    
-    schedule.every().day.at("11:00","Europe/London").do(post, page=page)
+    pageName = input("Cohost page name: ")
+    page = cohost.getProject(pageName)
+    creds = {
+        'username':username,
+        'passwd':passwd,
+        'pageName':pageName
+    }
+    schedule.every().day.at("11:00","Europe/London").do(post, page=page, creds=creds)
     while True:
         schedule.run_pending()
         time.sleep(1)
-        
-        
-    
-
-    
