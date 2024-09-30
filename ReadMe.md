@@ -1,3 +1,6 @@
+> [!NOTE]  
+> Cohost is shutting down, and will be read-only mode from 1st October 2024. OSRSPlayers has now been archived. Thanks to all who followed on Cohost!
+
 # Old School Runescape Player of the Day
 This is the source code for my Cohost bot, [OSRSPlayers](https://cohost.org/OSRSPlayers).
 
